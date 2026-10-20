@@ -25,7 +25,8 @@ public class AccountFormVM
 
     // Required on create; optional on edit (blank = keep current password)
     [Display(Name = "Password")]
-    [StringLength(70, MinimumLength = 2, ErrorMessage = "Password must be 2-70 characters.")]
+    [StringLength(70)]
+    [RegularExpression(PasswordPolicy.Pattern, ErrorMessage = PasswordPolicy.Message)]
     [DataType(DataType.Password)]
     public string? AccountPassword { get; set; }
 }

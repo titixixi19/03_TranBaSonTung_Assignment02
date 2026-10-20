@@ -19,6 +19,9 @@ public class ApiClient
         _httpContextAccessor = httpContextAccessor;
     }
 
+    // Address of the Web API (used to send the browser to the Google sign-in endpoint)
+    public Uri BaseAddress => _http.BaseAddress!;
+
     private HttpRequestMessage BuildRequest(HttpMethod method, string url, object? body)
     {
         var request = new HttpRequestMessage(method, url);

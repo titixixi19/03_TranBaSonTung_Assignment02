@@ -16,7 +16,8 @@ public class ProfileFormVM
     public string AccountEmail { get; set; } = string.Empty;
 
     [Display(Name = "New password")]
-    [StringLength(70, MinimumLength = 2, ErrorMessage = "Password must be 2-70 characters.")]
+    [StringLength(70)]
+    [RegularExpression(PasswordPolicy.Pattern, ErrorMessage = PasswordPolicy.Message)]
     [DataType(DataType.Password)]
     public string? AccountPassword { get; set; }
 

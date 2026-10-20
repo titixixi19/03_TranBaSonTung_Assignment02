@@ -1,0 +1,20 @@
+@{
+    var success = ViewBag.Success as bool? ?? true;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        <div class="card mt-4 text-center">
+            <div class="card-body p-4">
+                <i class="bi @(success ? "bi-envelope-check text-success" : "bi-x-circle text-danger")" style="font-size:3rem"></i>
+                <h3 class="mt-2">@ViewBag.Title</h3>
+                <p class="mb-2">@ViewBag.Message</p>
+                @if (!string.IsNullOrEmpty(ViewBag.Detail as string))
+                {
+                    <p class="text-muted small">@ViewBag.Detail</p>
+                }
+                <a asp-action="Login" class="btn btn-primary mt-2">Go to login</a>
+            </div>
+        </div>
+    </div>
+</div>

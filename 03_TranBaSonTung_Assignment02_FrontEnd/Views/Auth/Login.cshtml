@@ -1,6 +1,7 @@
 @model LoginVM
 @{
     ViewData["Title"] = "Login";
+    var providers = ViewBag.ExternalProviders as List<ExternalProviderVM> ?? new List<ExternalProviderVM>();
 }
 
 <div class="row justify-content-center">
@@ -11,6 +12,12 @@
                 <p class="text-muted text-center mb-4">Admin and Staff accounts</p>
                 <form asp-action="Login" method="post">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+                    @if (ViewBag.ShowResend == true)
+                    {
+                        <div class="mb-3 small">
+                            Did not get the email? <a asp-action="ResendConfirmation">Resend confirmation email</a>
+                        </div>
+                    }
                     <input type="hidden" asp-for="ReturnUrl" />
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label"></label>
@@ -18,12 +25,31 @@
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="Password" class="form-label"></label>
+                        <div class="d-flex justify-content-between">
+                            <label asp-for="Password" class="form-label"></label>
+                            <a asp-action="ForgotPassword" class="small">Forgot password?</a>
+                        </div>
                         <input asp-for="Password" class="form-control" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Login</button>
                 </form>
+
+                @if (providers.Any())
+                {
+                    <div class="text-center text-muted small my-3">or</div>
+                    @foreach (var p in providers)
+                    {
+                        <a asp-action="ExternalLogin" asp-route-provider="@p.Name" class="btn btn-outline-danger w-100 mb-2">
+                            <i class="bi bi-google"></i> Login with @(p.DisplayName ?? p.Name)
+                        </a>
+                    }
+                }
+
+                <hr />
+                <p class="text-center mb-0 small">
+                    No account yet? <a asp-action="Register">Register</a>
+                </p>
             </div>
         </div>
     </div>
