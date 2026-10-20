@@ -1,4 +1,4 @@
-using BackEnd.BusinessObjects;
+﻿using BackEnd.BusinessObjects;
 using BackEnd.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -28,7 +28,7 @@ public class NewsArticlesController : ODataController
         }
         return article;
     }
-
+    // GET: odata/NewsArticles để odata tự động xử lý các query options như $filter, $orderby, $top, $skip, $expand, v.v.
     [EnableQuery(MaxExpansionDepth = 3)]
     public IActionResult Get()
     {
