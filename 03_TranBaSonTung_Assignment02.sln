@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03_TranBaSonTung_Assignment01_BackEnd", "03_TranBaSonTung_Assignment01_BackEnd\03_TranBaSonTung_Assignment01_BackEnd.csproj", "{A9A40600-099F-43DA-8138-7F4DCE13E9F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03_TranBaSonTung_Assignment02_BackEnd", "03_TranBaSonTung_Assignment02_BackEnd\03_TranBaSonTung_Assignment02_BackEnd.csproj", "{A9A40600-099F-43DA-8138-7F4DCE13E9F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03_TranBaSonTung_Assignment01_FrontEnd", "03_TranBaSonTung_Assignment01_FrontEnd\03_TranBaSonTung_Assignment01_FrontEnd.csproj", "{C561C30B-E74B-4952-94E3-A55D95E3A860}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03_TranBaSonTung_Assignment02_FrontEnd", "03_TranBaSonTung_Assignment02_FrontEnd\03_TranBaSonTung_Assignment02_FrontEnd.csproj", "{C561C30B-E74B-4952-94E3-A55D95E3A860}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
