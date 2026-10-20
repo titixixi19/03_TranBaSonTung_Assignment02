@@ -2,6 +2,7 @@ using BackEnd.BusinessObjects;
 using BackEnd.Common;
 using BackEnd.DTOs;
 using BackEnd.Repositories;
+using BackEnd.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,12 @@ namespace BackEnd.Controllers;
 public class ProfileController : ControllerBase
 {
     private readonly ISystemAccountRepository _repository;
-    private readonly IConfiguration _configuration;
+    private readonly IAccountSecurityService _security;
 
-    public ProfileController(ISystemAccountRepository repository, IConfiguration configuration)
+    public ProfileController(ISystemAccountRepository repository, IAccountSecurityService security)
     {
         _repository = repository;
-        _configuration = configuration;
+        _security = security;
     }
 
     [HttpGet]
@@ -33,7 +34,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update([FromBody] ProfileUpdateRequest request)
+    public async Task<IActionResult> Update([FromBody] ProfileUpdateRequest request)
     {
         var id = User.GetAccountId();
         var account = _repository.GetAccountById(id);
@@ -42,20 +43,11 @@ public class ProfileController : ControllerBase
             return NotFound(new { message = "Account not found." });
         }
 
-        var isAdminEmail = string.Equals(request.AccountEmail, _configuration["AdminAccount:Email"], StringComparison.OrdinalIgnoreCase);
-        if (isAdminEmail || _repository.EmailExists(request.AccountEmail, id))
-        {
-            return BadRequest(new { message = "Email already exists." });
-        }
-
-        _repository.UpdateAccount(new SystemAccount
-        {
-            AccountID = id,
-            AccountName = request.AccountName.Trim(),
-            AccountEmail = request.AccountEmail.Trim(),
-            AccountRole = account.AccountRole,
-            AccountPassword = request.AccountPassword
-        });
-        return Ok(new { message = "Profile updated successfully." });
+        // Staff cannot change their own role; email/password changes go through Identity
+        var result = await _security.UpdateAccountAsync(
+            id, request.AccountName, request.AccountEmail, account.AccountRole ?? AccountRoles.Staff, request.AccountPassword);
+        return result.Succeeded
+            ? Ok(new { message = "Profile updated successfully." })
+            : BadRequest(new { message = result.Message });
     }
 }

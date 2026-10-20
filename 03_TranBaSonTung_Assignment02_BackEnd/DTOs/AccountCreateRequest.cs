@@ -13,6 +13,6 @@ public class AccountCreateRequest
     [Required, Range(1, 2, ErrorMessage = "Role must be 1 (Staff) or 2 (Lecturer).")]
     public int AccountRole { get; set; }
 
-    [Required, StringLength(70, MinimumLength = 2)]
+    [Required, StringLength(70, MinimumLength = 6)]
     public string AccountPassword { get; set; } = string.Empty;
 }

@@ -11,6 +11,6 @@ public class ProfileUpdateRequest
     public string AccountEmail { get; set; } = string.Empty;
 
     // Leave empty to keep the current password
-    [StringLength(70, MinimumLength = 2)]
+    [StringLength(70, MinimumLength = 6)]
     public string? AccountPassword { get; set; }
 }

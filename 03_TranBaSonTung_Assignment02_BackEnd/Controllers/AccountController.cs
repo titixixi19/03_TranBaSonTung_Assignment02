@@ -1,6 +1,6 @@
 using BackEnd.BusinessObjects;
 using BackEnd.DTOs;
-using BackEnd.Repositories;
+using BackEnd.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,63 +11,40 @@ namespace BackEnd.Controllers;
 [Authorize(Roles = AccountRoles.AdminName)]
 public class AccountController : ControllerBase
 {
-    private readonly ISystemAccountRepository _repository;
-    private readonly IConfiguration _configuration;
+    private readonly IAccountSecurityService _security;
 
-    public AccountController(ISystemAccountRepository repository, IConfiguration configuration)
-    {
-        _repository = repository;
-        _configuration = configuration;
-    }
-
-    private bool IsAdminEmail(string email) =>
-        string.Equals(email, _configuration["AdminAccount:Email"], StringComparison.OrdinalIgnoreCase);
+    public AccountController(IAccountSecurityService security) => _security = security;
 
     [HttpPost]
-    public IActionResult Create([FromBody] AccountCreateRequest request)
+    public async Task<IActionResult> Create([FromBody] AccountCreateRequest request)
     {
-        if (IsAdminEmail(request.AccountEmail) || _repository.EmailExists(request.AccountEmail))
+        var result = await _security.CreateAccountAsync(
+            request.AccountName, request.AccountEmail, request.AccountRole, request.AccountPassword);
+        if (!result.Succeeded)
         {
-            return BadRequest(new { message = "Email already exists." });
+            return BadRequest(new { message = result.Message });
         }
-
-        var account = _repository.AddAccount(new SystemAccount
-        {
-            AccountName = request.AccountName.Trim(),
-            AccountEmail = request.AccountEmail.Trim(),
-            AccountRole = request.AccountRole,
-            AccountPassword = request.AccountPassword
-        });
-        return Ok(new { account.AccountID, message = "Account created successfully." });
+        return Ok(new { result.Account!.AccountID, message = result.Message });
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(short id, [FromBody] AccountUpdateRequest request)
+    public async Task<IActionResult> Update(short id, [FromBody] AccountUpdateRequest request)
     {
-        if (_repository.GetAccountById(id) == null)
+        var result = await _security.UpdateAccountAsync(
+            id, request.AccountName, request.AccountEmail, request.AccountRole, request.AccountPassword);
+        if (!result.Succeeded)
         {
-            return NotFound(new { message = "Account not found." });
+            return result.Message == "Account not found."
+                ? NotFound(new { message = result.Message })
+                : BadRequest(new { message = result.Message });
         }
-        if (IsAdminEmail(request.AccountEmail) || _repository.EmailExists(request.AccountEmail, id))
-        {
-            return BadRequest(new { message = "Email already exists." });
-        }
-
-        _repository.UpdateAccount(new SystemAccount
-        {
-            AccountID = id,
-            AccountName = request.AccountName.Trim(),
-            AccountEmail = request.AccountEmail.Trim(),
-            AccountRole = request.AccountRole,
-            AccountPassword = request.AccountPassword
-        });
-        return Ok(new { message = "Account updated successfully." });
+        return Ok(new { message = result.Message });
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(short id)
+    public async Task<IActionResult> Delete(short id)
     {
-        _repository.DeleteAccount(id);
+        await _security.DeleteAccountAsync(id);
         return Ok(new { message = "Account deleted successfully." });
     }
 }

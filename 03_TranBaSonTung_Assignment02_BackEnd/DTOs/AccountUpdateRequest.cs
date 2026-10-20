@@ -14,6 +14,6 @@ public class AccountUpdateRequest
     public int AccountRole { get; set; }
 
     // Leave empty to keep the current password
-    [StringLength(70, MinimumLength = 2)]
+    [StringLength(70, MinimumLength = 6)]
     public string? AccountPassword { get; set; }
 }
