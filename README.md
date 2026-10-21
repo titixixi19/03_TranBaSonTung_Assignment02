@@ -7,25 +7,32 @@ email confirmation, password reset, hashed passwords, account lockout and Google
 
 ## Solution structure
 
+Two Visual Studio solutions, as required (`StudentName_ClassCode_A02_BE.sln`, `StudentName_ClassCode_A02_FE.sln`):
+
 ```
-03_TranBaSonTung_Assignment02.sln
-├── 03_TranBaSonTung_Assignment02_BackEnd    ASP.NET Core Web API + OData
-│   ├── BusinessObjects/   Entities + FUNewsManagementDbContext (connection string from appsettings.json)
-│   ├── DataAccess/        DAOs – Singleton pattern
-│   ├── Repositories/      Repository pattern (interfaces + implementations, call the DAOs)
-│   ├── DTOs/              Request / response models with data-annotation validation
-│   └── Controllers/       OData (read/search) + REST (create/update/delete, auth, report)
-├── 03_TranBaSonTung_Assignment02_FrontEnd   ASP.NET Core MVC – calls the Web API through HttpClient
-└── Database/FUNewsManagement.sql
+TranBaSonTung_SE1933_A02_BE.sln
+└── 03_TranBaSonTung_Assignment02_BackEnd    ASP.NET Core Web API + OData + JWT + Identity
+    ├── BusinessObjects/   Entities, FUNewsManagementDbContext, Identity (ApplicationUser, AuthDbContext)
+    ├── DataAccess/        DAOs – Singleton pattern
+    ├── Repositories/      Repository pattern (interfaces + implementations, call the DAOs)
+    ├── Services/          Security (Identity), JWT, email
+    ├── DTOs/              Request / response models with data-annotation validation
+    ├── Migrations/        Identity tables
+    └── Controllers/       OData (read/search) + REST (create/update/delete, auth, report)
+
+TranBaSonTung_SE1933_A02_FE.sln
+└── 03_TranBaSonTung_Assignment02_FrontEnd   ASP.NET Core MVC – calls the Web API through HttpClient
+
+Database/FUNewsManagement.sql
 ```
 
 Controllers never touch the database directly: Controller → Repository → DAO → DbContext.
 
 ## Run
 
-1. Run `Database/FUNewsManagement.sql` on SQL Server 2019+.
+1. Run `Database/FUNewsManagement.sql` on SQL Server 2012+ (Identity tables are created automatically on first run).
 2. Edit `ConnectionStrings:MyCnn` in `03_TranBaSonTung_Assignment02_BackEnd/appsettings.json` if needed.
-3. In Visual Studio: *Solution → Configure Startup Projects → Multiple startup projects* → start both BackEnd and FrontEnd (profile `http`).
+3. Open `TranBaSonTung_SE1933_A02_BE.sln` and press F5, then open `TranBaSonTung_SE1933_A02_FE.sln` in a second Visual Studio window and press F5 (profile `http`).
    Or from a terminal:
    ```
    dotnet run --project 03_TranBaSonTung_Assignment02_BackEnd --launch-profile http
